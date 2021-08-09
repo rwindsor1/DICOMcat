@@ -62,17 +62,25 @@ def dicomcat(path: str, max_num_slices: int = 12, num_rows: int = 3)->None:
         if all([Tag('ImagePositionPatient') in dcm_obj for dcm_obj in dcm_objs]) and \
            all([Tag('ImageOrientationPatient') in dcm_obj for dcm_obj in dcm_objs]):
            image_orientations = np.array([dcm_obj.ImageOrientationPatient for dcm_obj in dcm_objs]).round()
+           image_positions = np.array([dcm_obj.ImagePositionPatient for dcm_obj in dcm_objs]).astype(np.float).round()
            mean_image_orientation = image_orientations.mean(axis=0).round()
-           if (mean_image_orientation[[0,3]] == [0,0]).all(): orientation = 'Sagittal'
+           if (mean_image_orientation[[0,3]] == [0,0]).all(): orientation = 'Sagittal' 
            elif (mean_image_orientation[[2,5]] == [0,0]).all(): orientation = 'Axial'
            elif (mean_image_orientation[[1,4]] == [0,0]).all(): orientation = 'Coronal'
            else: orientation = 'unknown'
            print(f"Image Orientation {orientation}")
            with warnings.catch_warnings():
-            warnings.simplefilter(action='ignore', category=FutureWarning)
-            if mean_image_orientation == 'Sagittal': dcm_objs = sorted(dcm_objs, key =lambda x:  float(x.ImagePositionPatient[0]))
-            elif mean_image_orientation == 'Coronal': dcm_objs = sorted(dcm_objs, key =lambda x: float(x.ImagePositionPatient[1]))
-            elif mean_image_orientation == 'Axial': dcm_objs = sorted(dcm_objs, key =lambda x:   float(x.ImagePositionPatient[2]))
+            # warnings.simplefilter(action='ignore', category=FutureWarning)
+
+            if mean_image_orientation == 'Sagittal': 
+                sort_idxs=np.argsort(image_positions[:,0])
+            elif mean_image_orientation == 'Coronal': 
+                sort_idxs=np.argsort(image_positions[:,0])
+            elif mean_image_orientation == 'Axial': 
+                sort_idxs=np.argsort(image_positions[:,0])
+            else: sort_idxs = range(len(dcm_objs))
+
+            dcm_objs = [dcm_objs[sort_idx] for sort_idx in sort_idxs]
 
 
 

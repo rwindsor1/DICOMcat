@@ -11,6 +11,6 @@ setup(name= 'dicomcat',
       test_suite='nose.collector',
       tests_require=['nose'],
       entry_points={
-            'console_scripts': ['dicomcat=dicomcat.dicomcat:dicomcat']
+            'console_scripts': ['dicomcat=dicomcat.cli:show_dicom']
       },
-      zip_safe=False)
+      ip_safe=False)

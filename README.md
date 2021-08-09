@@ -1,7 +1,9 @@
 # DICOMcat
 
-DICOMcat is a simple python file for displaying DICOM files in iTerm2 using 
-imgcat.
+DICOMcat is a simple python package for displaying DICOM files in iTerm2 similar 
+to [imgcat](https://github.com/eddieantonio/imgcat) for conventional images and [niicat](https://github.com/MIC-DKFZ/niicat)
+for nifti images. This might be useful for quickly viewing DICOMs on a remote
+server in your terminal.
 
 To run the examples, run `python -m unittest` in the package directory
 
