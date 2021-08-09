@@ -13,4 +13,5 @@ setup(name= 'dicomcat',
       entry_points={
             'console_scripts': ['dicomcat=dicomcat.cli:show_dicom']
       },
+      include_package_data=True,
       ip_safe=False)
