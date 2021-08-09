@@ -1,5 +1,6 @@
 # DICOMcat
 
+![](example.gif)
 DICOMcat is a simple python package for displaying DICOM files in iTerm2 similar 
 to [imgcat](https://github.com/eddieantonio/imgcat) for conventional images and [niicat](https://github.com/MIC-DKFZ/niicat)
 for nifti images. This might be useful for quickly viewing DICOMs on a remote
