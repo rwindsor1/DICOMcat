@@ -3,3 +3,5 @@ __pycache__
 ./dicomcat/tests/assets/example_dicoms/t1_tse_sag_upper
 *.pyc
 *.pyo
+build/
+dist/

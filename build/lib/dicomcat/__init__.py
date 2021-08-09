@@ -1,1 +1,0 @@
-from .dicomcat import dicomcat
