@@ -1,1 +1,4 @@
-dicomcat/tests/assets/example_dicoms/*
+include dicomcat/tests/assets/example_dicoms/Head/*
+include dicomcat/tests/assets/example_dicoms/BrainExample/*
+include dicomcat/tests/assets/example_dicoms/LumbarDicomExample/*
+include dicomcat/tests/assets/example_dicoms/Knee/*
