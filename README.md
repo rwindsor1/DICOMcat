@@ -5,7 +5,28 @@ to [imgcat](https://github.com/eddieantonio/imgcat) for conventional images and 
 for nifti images. This might be useful for quickly viewing DICOMs on a remote
 server in your terminal.
 
-To run the examples, run `python -m unittest` in the package directory
+## Usage
+
+DICOMcat can be used, either within a python script or from the terminal
+
+To use in terminal, navigate to the DICOM folder/file and enter
+
+`$ dicomcat EXAMPLE_FILE`
+
+In a python script, use as follows
+
+`
+import dicomcat
+path='path/to/dicom'
+dicomcat.dicomcat(path)
+`
+
+There are additional options to change the number of rows, downscaling, or maximum number of slices shown (when displaying 
+a directory of DICOM slices).
+
+## Examples/Testing
+
+There are a number of example DICOMS to test with the repo. To run the examples, run `python -m unittest` in the package directory
 
 Example Dicom Sources:
 - `LumbarDicomExample` - Radiopedia.org, Case courtesy of Prof. Frank Galliard [source](https://radiopaedia.org/cases/normal-lumbar-spine-mri?lang=gb)

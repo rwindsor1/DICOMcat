@@ -4,6 +4,7 @@ import os
 import random
 import string
 import sys
+from scipy import interpolate
 import warnings
 import pydicom
 import pydicom.pixel_data_handlers.gdcm_handler as gdcm_handler
@@ -35,14 +36,15 @@ def pad_to_size_and_normalize(img: np.array, size_to_pad_to : np.array) -> np.ar
 
 
 def try_read_dicom(dicom_path_file: str) -> list:
-    try: 
+    try:
         return [pydicom.dcmread(dicom_path_file)]
     except: return []
 
-def dicomcat(path: str, max_num_slices: int = 12, num_rows: int = 3)->None:
+def dicomcat(path: str, max_num_slices: int = 12, num_rows: int = 3, resolution_downscale: float = 0.5)->None:
     assert os.path.exists(path), f"Could not find {path}"
     assert num_rows <= max_num_slices, '''Number of rows should be less than 
                                       max number of slices'''
+    assert (resolution_downscale > 0) and (resolution_downscale <= 1), "Resolution downscale should be between 0 and 1"
     dcm_objs = []
     if os.path.isdir(path):
         files = sorted(glob.glob(os.path.join(path,'*')))
@@ -51,20 +53,20 @@ def dicomcat(path: str, max_num_slices: int = 12, num_rows: int = 3)->None:
             dcm_objs += try_read_dicom(file_)
     else:
         dcm_objs += try_read_dicom(path)
-    
+        num_rows=1
+
     if len(dcm_objs) == 0: print(f"Could not find any DICOM files at {path}!")
 
     for dcm_obj in dcm_objs: dcm_obj.file_meta.TransferSyntaxUID = pydicom.uid.ImplicitVRLittleEndian
 
 
-    else: 
-
+    else:
         if all([Tag('ImagePositionPatient') in dcm_obj for dcm_obj in dcm_objs]) and \
            all([Tag('ImageOrientationPatient') in dcm_obj for dcm_obj in dcm_objs]):
            image_orientations = np.array([dcm_obj.ImageOrientationPatient for dcm_obj in dcm_objs]).round()
            image_positions = np.array([dcm_obj.ImagePositionPatient for dcm_obj in dcm_objs]).astype(np.float).round()
            mean_image_orientation = image_orientations.mean(axis=0).round()
-           if (mean_image_orientation[[0,3]] == [0,0]).all(): orientation = 'Sagittal' 
+           if (mean_image_orientation[[0,3]] == [0,0]).all(): orientation = 'Sagittal'
            elif (mean_image_orientation[[2,5]] == [0,0]).all(): orientation = 'Axial'
            elif (mean_image_orientation[[1,4]] == [0,0]).all(): orientation = 'Coronal'
            else: orientation = 'unknown'
@@ -72,12 +74,12 @@ def dicomcat(path: str, max_num_slices: int = 12, num_rows: int = 3)->None:
            with warnings.catch_warnings():
             # warnings.simplefilter(action='ignore', category=FutureWarning)
 
-            if mean_image_orientation == 'Sagittal': 
-                sort_idxs=np.argsort(image_positions[:,0])
-            elif mean_image_orientation == 'Coronal': 
-                sort_idxs=np.argsort(image_positions[:,0])
-            elif mean_image_orientation == 'Axial': 
-                sort_idxs=np.argsort(image_positions[:,0])
+            if   orientation == 'Sagittal':
+                sort_idxs=np.argsort(image_positions[:,0].astype(float))
+            elif orientation == 'Coronal':
+                sort_idxs=np.argsort(image_positions[:,1].astype(float))
+            elif orientation == 'Axial':
+                sort_idxs=np.argsort(image_positions[:,2].astype(float))
             else: sort_idxs = range(len(dcm_objs))
 
             dcm_objs = [dcm_objs[sort_idx] for sort_idx in sort_idxs]
@@ -91,14 +93,13 @@ def dicomcat(path: str, max_num_slices: int = 12, num_rows: int = 3)->None:
         # if more than max_num_slices, get rid of some slices before showing image
         if len(dcm_objs) > max_num_slices:
             dcm_objs = [dcm_objs[int(len(dcm_objs)*idx/max_num_slices)] for idx in range(max_num_slices)]
-        
         dcm_imgs = [dcm_obj.pixel_array for dcm_obj in dcm_objs]
         max_dcm_img_size = np.array([dcm_img.shape for dcm_img in dcm_imgs]).max(axis=0)
         dcm_imgs = [pad_to_size_and_normalize(dcm_img, max_dcm_img_size) for dcm_img in dcm_imgs]
 
         num_cols = math.ceil(len(dcm_objs)/num_rows)
 
-        output_img = np.zeros((num_rows*max_dcm_img_size[0],num_cols*max_dcm_img_size[1],),dtype=np.uint8)
+        output_img = np.zeros((num_rows*max_dcm_img_size[0],num_cols*max_dcm_img_size[1]),dtype=np.uint8)
 
         for idx, dcm_img in enumerate(dcm_imgs):
             row_idx = idx // num_cols 
@@ -113,4 +114,7 @@ def dicomcat(path: str, max_num_slices: int = 12, num_rows: int = 3)->None:
                 print(tag_name +  ':' + str(dcm_objs[0][Tag(tag_name)].value), end=', ')
         print('\n')
 
+        # downscale image so it doesn't slow terminal
+        img = Image.fromarray(np.uint8(output_img),'L')
+        output_img = np.array(img.resize((int(output_img.shape[1]*resolution_downscale),int(output_img.shape[0]*resolution_downscale))))
         im_show(output_img)
