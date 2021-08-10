@@ -40,7 +40,7 @@ Example Dicom Sources:
 - `Knee` - Knee CT,  courtesy of Visual Human Project [source](https://medicine.uiowa.edu/mri/facility-resources/images/visible-human-project-ct-datasets)
 - `BrainExample` - Brain MRI, courtesy of Jeff Mather, Mathworks [source](https://uk.mathworks.com/matlabcentral/fileexchange/2762-dicom-example-files)
 
-## Feature to be added
+## Features to be added
 
 The following are planned to be added in the fullness of time:
 - GIF view through slices instead of grid.
