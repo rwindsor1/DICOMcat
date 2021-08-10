@@ -2,12 +2,14 @@
 
 ![](example.gif)
 
-DICOMcat is a simple, pip-installable python package for displaying DICOM files in iTerm2 similar 
+DICOMcat is a simple, [pip-installable](https://pypi.org/project/dicomcat/) python package for displaying DICOM files in iTerm2 similar 
 to [imgcat](https://github.com/eddieantonio/imgcat) for conventional images and [niicat](https://github.com/MIC-DKFZ/niicat)
 for nifti images. This might be useful for quickly viewing DICOMs on a remote
 server in your terminal.
 
+## Installation
 
+To use either pip install (`pip install dicomcat`) or clone the source code and add to your python path.
 
 ## Usage
 
@@ -37,3 +39,11 @@ Example Dicom Sources:
 - `Head` - Head CT, courtesy of Visual Human Project [source](https://medicine.uiowa.edu/mri/facility-resources/images/visible-human-project-ct-datasets)
 - `Knee` - Knee CT,  courtesy of Visual Human Project [source](https://medicine.uiowa.edu/mri/facility-resources/images/visible-human-project-ct-datasets)
 - `BrainExample` - Brain MRI, courtesy of Jeff Mather, Mathworks [source](https://uk.mathworks.com/matlabcentral/fileexchange/2762-dicom-example-files)
+
+## Feature to be added
+
+The following are planned to be added in the fullness of time:
+- GIF view through slices instead of grid.
+- Adding handlers for compressed pixel data (for now, update your pydicom, [see here](https://pydicom.github.io/pydicom/stable/old/image_data_handlers.html)
+
+
