@@ -45,5 +45,6 @@ Example Dicom Sources:
 The following are planned to be added in the fullness of time:
 - GIF view through slices instead of grid.
 - Adding handlers for compressed pixel data (for now, update your pydicom, [see here](https://pydicom.github.io/pydicom/stable/old/image_data_handlers.html)
+- [libsixel](https://github.com/saitoha/libsixel) support for use with terminals other than iTerm2
 
-
+If you'd like to contribute one of these or your own feature, feel free to submit a PR.
